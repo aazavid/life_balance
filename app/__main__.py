@@ -1,78 +1,42 @@
 from tkinter import *
-from enum import Enum
-from datetime import date, time
-import uuid
-
-
-class Direction:
-    def __init__(self, name, description=None, goals=None, id=uuid.uuid4()):
-        self.name = name
-        self.description = description
-        self.goals = goals
-        self.id = id
-
-
-class GoalsType(Enum):
-    GLOBAL = 1
-    STRATEGY = 2
-    YEARS = 3
-    QUART = 4
-
-
-class Goals:
-    def __init__(self, name, type: GoalsType, description=None, direction_name=None, release_date=None, projects=None,
-                 tasks=None, id=uuid.uuid4()):
-        self.name = name
-        self.type = type
-        self.description = description
-        self.direction_name = direction_name
-        self.release_date = release_date
-        self.projects = projects
-        self.tasks = tasks
-        self.id = id
-
-
-class Project:
-    def __init__(self, name, description=None, direction_name=None, release_date=None, tasks=None, id=uuid.uuid4()):
-        self.name = name
-        self.description = description
-        self.direction_name = direction_name
-        self.release_date = release_date
-        self.tasks = tasks
-        self.id = id
-
-
-class Priority(Enum):
-    HIGH = 1
-    MEDIUM = 2
-    LOW = 3
-
-
-class Task:
-    def __init__(self, name, description=None, date=None, time=None, repeat=None, repeat_time=None,
-                 priority=Priority.MEDIUM, isDone=False, id=uuid.uuid4()):
-        self.name = name
-        self.description = description
-        self.date = date
-        self.time = time
-        self.repeat = repeat
-        self.repeat_time = repeat_time
-        self.priority = priority
-        self.isDone = isDone
-        self.id = id
+from modules import *
 
 
 def make_today_frame(display):
     clear_frame(display)
     title = Label(display, text="Today")
     title.grid(row=0, column=0, sticky=N)
+
+    # display tasks
     index_row = 1
     tasks = get_tasks()
     tasks.sort(key=lambda x: x.time)
     for task in tasks:
-        label = Label(display, text=task.name)
-        label.grid(row=index_row, column=0)
+        task_label_time = Label(display, text=task.time.strftime("%H:%M"), padx=0)
+        task_label_time.grid(row=index_row, column=0)
+
+        task_label_name = Label(display, text=task.name)
+        task_label_name.grid(row=index_row, column=1)
+
+        task_check_box_is_done = Checkbutton(display)
+        task_check_box_is_done.grid(row=index_row, column=2)
+        if task.isDone:
+            task_check_box_is_done.select()
+
         index_row = index_row + 1
+
+    # display habits
+    habit_title = Label(display, text="Habits")
+    index_row += 10
+    habit_title.grid(row=index_row, column=1)
+    habits = get_habits()
+    for habit in habits:
+        index_row = index_row + 1
+        label_name_habit = Label(display, text=habit.name)
+        label_name_habit.grid(row=index_row, column=0)
+
+        habit_check_box_is_done = Checkbutton(display)
+        habit_check_box_is_done.grid(row=index_row, column=1)
 
 
 def make_month_frame(display):
@@ -100,6 +64,17 @@ def get_tasks(tasks_date=date.today()):
              Task("Решить задачу E", date=tasks_date, time=time(16, 20))
              ]
     return tasks
+
+
+def get_directions():
+    directions = [Direction("health"), Direction("finance"), Direction("relationship"), Direction("family"),
+                  Direction("self-development"), Direction("routine"), Direction("rest"), Direction("business")]
+    return directions
+
+
+def get_habits():
+    habits = [Habit("walking", "health"), Habit("drink water", "health"), Habit("small talk", "relationship")]
+    return habits
 
 
 def clear_frame(frame):
