@@ -1,7 +1,7 @@
-from views import App
+from application import Application
 
 
 if __name__ == '__main__':
     # todo: add view for screen today
-    app = App()
+    app = Application()
     app.mainloop()

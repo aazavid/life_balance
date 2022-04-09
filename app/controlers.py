@@ -1,28 +1,25 @@
-from models import Task, Direction, Habit
-from datetime import date, time
+from models import DataModels
 
 
-class DataController:
-    def __init__(self):
-        pass
+class Controller:
 
-    @staticmethod
-    def get_tasks(tasks_date=date.today()):
-        tasks = [Task("Решить задачу А", date=tasks_date, time=time(16, 25)),
-                 Task("Решить задачу B", date=tasks_date, time=time(6, 25)),
-                 Task("Решить задачу C", date=tasks_date, time=time(8, 0)),
-                 Task("Решить задачу D", date=tasks_date, time=time(12, 25)),
-                 Task("Решить задачу E", date=tasks_date, time=time(16, 20))
-                 ]
-        return tasks
+    def __init__(self, view):
+        self.view = view
 
-    @staticmethod
-    def get_directions():
-        directions = [Direction("health"), Direction("finance"), Direction("relationship"), Direction("family"),
-                      Direction("self-development"), Direction("routine"), Direction("rest"), Direction("business")]
-        return directions
+    def make_today_frame(self, frame):
+        tasks = DataModels.get_tasks()
+        habits = DataModels.get_habits()
+        self.view.show_today_frame(frame, tasks, habits)
+
+    def make_month_frame(self, frame):
+        self.view.show_month_frame(frame)
+
+    def make_week_frame(self, frame):
+        self.view.show_week_frame(frame)
 
     @staticmethod
-    def get_habits():
-        habits = [Habit("walking", "health"), Habit("drink water", "health"), Habit("small talk", "relationship")]
-        return habits
+    def cursor_position(event):
+        x, y = event.x, event.y
+        print('{}, {}'.format(x, y))
+
+
